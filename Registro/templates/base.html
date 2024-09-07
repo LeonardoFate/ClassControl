@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mi Aplicación{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Mi Aplicación</h1>
+        <!-- Navegación u otros elementos comunes -->
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Aquí irá el contenido específico de cada página -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mi Aplicación</p>
+    </footer>
+
+    <!-- Scripts comunes -->
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
+

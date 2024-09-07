@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}
+Registro de Estudiantes
+{% endblock %}
+
+{% block content %}
+    <h2>Registro de Estudiantes</h2>
+    <form id="register-form" action="{{ url_for('register') }}" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="foto">Foto:</label>
+            <div>
+                <video id="video" width="320" height="240" autoplay></video>
+                <button type="button" id="capture">Capturar Foto</button>
+            </div>
+            <canvas id="canvas" style="display:none;"></canvas>
+            <input type="hidden" name="foto" id="foto" value="">
+        </div>
+        <div class="form-group" id="preview-container" style="display:none;">
+            <h3>Vista previa de la foto</h3>
+            <img id="preview" src="" alt="Foto capturada" width="320" height="240">
+            <p>¿Deseas usar esta foto?</p>
+            <button type="button" id="recapture">Tomar otra foto</button>
+            <button type="submit" class="btn btn-primary">Usar esta foto</button>
+        </div>
+    </form>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('capture');
+        const recaptureButton = document.getElementById('recapture');
+        const fotoInput = document.getElementById('foto');
+        const previewContainer = document.getElementById('preview-container');
+        const preview = document.getElementById('preview');
+
+        // Solicitar acceso a la cámara
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error al acceder a la cámara: " + err);
+            });
+
+        // Capturar la foto
+        captureButton.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convertir la imagen a base64 y mostrarla en la vista previa
+            const dataURL = canvas.toDataURL('image/png');
+            fotoInput.value = dataURL;
+            preview.src = dataURL;
+
+            // Mostrar el contenedor de vista previa
+            previewContainer.style.display = 'block';
+        });
+
+        // Tomar otra foto
+        recaptureButton.addEventListener('click', () => {
+            // Ocultar la vista previa y permitir tomar otra foto
+            previewContainer.style.display = 'none';
+            video.play();
+        });
+    </script>
+{% endblock %}
